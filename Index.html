@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ar"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>نتائج المباريات</title> 
+ </head> 
+ <body> 
+  <h2>نتائج المباريات الحية</h2> 
+  <div id="result1">
+   تحميل النتائج...
+  </div> 
+  <div id="result2"></div> 
+  <script>
+        const apiKey = '38678efac8e24cde822a7f15a92f446f';
+        const apiUrl = 'https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/matches';
+
+        async function getMatchResults() {
+            try {
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'X-Auth-Token': apiKey,
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data); // طباعة النتائج في Console
+
+                if (data.matches && data.matches.length > 0) {
+                    document.getElementById("result1").innerText =
+                        `${data.matches[0].homeTeam.name} ${data.matches[0].score.fullTime.homeTeam || 0} - ${data.matches[0].score.fullTime.awayTeam || 0} ${data.matches[0].awayTeam.name}`;
+                } else {
+                    document.getElementById("result1").innerText = "لا توجد مباريات حالياً.";
+                }
+            } catch (error) {
+                console.error("خطأ أثناء جلب البيانات:", error);
+                document.getElementById("result1").innerText = "خطأ أثناء جلب النتائج.";
+            }
+        }
+
+        window.onload = function () {
+            getMatchResults();
+        };
+    </script> 
+ </body>
+</html>
